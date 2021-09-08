@@ -1,19 +1,12 @@
-name: 'JavaScript Action Template'
-
-description: 'Add description here'
-
+name: 'YAML File Validation'
+description: 'Checks structure of yaml files against a pre-defined schema'
 inputs:
-  input-1:
-    description: 'Add a description here'
+  yaml-file:
+    description: 'the yaml file to validate'
     required: true
-  input-2:
-    description: 'Add a description here'
-    required: false
-
-outputs:
-  output-1:
-    description: 'Add a description here'
-
+  schema-file:
+    description: 'the schema file used to validate yaml file'
+    required: true
 runs:
   using: 'node12'
-  main: 'dist/index.js'
+  main: './dist/index.js'
