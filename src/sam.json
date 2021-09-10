@@ -1,0 +1,51 @@
+{
+    "id": "required",
+    "schemaVersion": "required",
+    "name": "required",
+    "projectType": "required",
+    "boundedContexts": "required",
+    "deploymentTargets": "required",
+    "sumoLogicSourceCategories": "required",
+    "teams": "required",
+    "documentation": {
+        "REQUIRED": "required",
+        "technical": "warning",
+        "product": "warning"
+    },
+    "build": {
+        "REQUIRED": "required",
+        "ci": {
+            "REQUIRED": "required",
+            "id": "warning",
+            "link": "warning"
+        },
+        "cd": {
+            "REQUIRED": "required",
+            "id": "warning",
+            "name": "warning",
+            "link": "warning"
+        }
+    },
+    "databases": {
+        "REQUIRED": "required",
+        "LISTOF": {
+            "environment": "required",
+            "name": "required",
+            "type": "required"
+        }
+    },
+    "publicEndpoints": {
+        "REQUIRED": "required",
+        "LISTOF": {
+            "environment": "required",
+            "endpoints": "required"
+        }
+    },
+    "referencedEndpoints": {
+        "REQUIRED": "required",
+        "LISTOF": {
+            "environment": "required",
+            "endpoints": "required"
+        }
+    }
+}

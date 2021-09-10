@@ -2,7 +2,7 @@ const core = require('@actions/core');
 const yaml = require('js-yaml');
 const fs = require('fs');
 const yamlLibrary = require('./yaml-library.js');
-const { console } = require('console');
+const sam = require('./sam.json');
 
 let docFailed = false;
 let failed = failure => {
@@ -12,20 +12,20 @@ let failed = failure => {
 let warn = warning => core.warning(warning);
 let info = information => core.info(information);
 
-warn('test warning');
-
 try {
   let yamlFilePath = core.getInput('yaml-file');
-  let yamlDocs = yaml.loadAll(fs.readFileSync(yamlFilePath, 'utf8'));
+  let yamlDocs = yaml.loadAll(fs.readFileSync(yamlFilePath, 'utf8', warn));
+  info('YAML FILE PATH=' + yamlFilePath);
 
   let schemaFilePath = core.getInput('schema-file');
-  let schemaDoc = JSON.parse(fs.readFileSync(schemaFilePath, 'utf8'));
-
-  info('YAML FILE PATH=' + yamlFilePath);
-  info('SCHEMA FILE PATH=' + schemaFilePath);
+  let schemaDoc = schemaFilePath == 'SAM' ? sam : JSON.parse(fs.readFileSync(schemaFilePath, 'utf8'));
+  if(schemaFilePath == 'SAM'){
+    info('IM-OPEN SAM.yaml format specified');
+  } else {
+    info('SCHEMA FILE PATH=' + schemaFilePath);
+  };
 
   let docNumber = 1;
-
   if (yamlDocs.length == 0) {
     failed('No yaml documents detected in ' + yamlFilePath);
   } else {
@@ -34,6 +34,8 @@ try {
       yamlLibrary.checkDocAgainstSchema(doc, schemaDoc, failed, warn, info);
       if (docFailed) {
         failed('Document #' + docNumber + ' failed validation.');
+      } else {
+        info('Document #' + docNumber + ' successfully validated.');
       }
 
       info('Finished Validating Document #' + docNumber);

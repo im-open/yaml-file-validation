@@ -3208,7 +3208,7 @@ var require_yaml_library = __commonJS({
         if (propertyValue == "DontCascade") {
           return;
         }
-        switch (required) {
+        switch (required.toLowerCase()) {
           case REQUIRED.REQUIRED: {
             if (missing)
               failed2(badness);
@@ -3245,7 +3245,7 @@ var require_yaml_library = __commonJS({
       recurseIntoArray: function(recursedSchema, keys, nameOfLastProperty, failed2, warning, info2) {
         for (schemaValue in recursedSchema) {
           if (typeof recursedSchema[schemaValue] == "string") {
-            if (schemaValue == "Required") {
+            if (schemaValue == "REQUIRED") {
               var docValue = this.findValueGivenKeys(keys);
               this.verifyProperty(docValue, recursedSchema[schemaValue], nameOfLastProperty, keys, failed2, warning, info2);
             } else {
@@ -3255,7 +3255,7 @@ var require_yaml_library = __commonJS({
               this.verifyProperty(result, recursedSchema[schemaValue], schemaValue, temp, failed2, warning, info2);
             }
           } else {
-            if (schemaValue == "listCheck") {
+            if (schemaValue == "LISTOF") {
               var temp = [...keys];
               var docValue = this.findValueGivenKeys(temp);
               if (docValue !== void 0 && docValue !== null) {
@@ -3286,12 +3286,69 @@ var require_yaml_library = __commonJS({
   }
 });
 
+// src/sam.json
+var require_sam = __commonJS({
+  "src/sam.json"(exports2, module2) {
+    module2.exports = {
+      id: "required",
+      schemaVersion: "required",
+      name: "required",
+      projectType: "required",
+      boundedContexts: "required",
+      deploymentTargets: "required",
+      sumoLogicSourceCategories: "required",
+      teams: "required",
+      documentation: {
+        REQUIRED: "required",
+        technical: "warning",
+        product: "warning"
+      },
+      build: {
+        REQUIRED: "required",
+        ci: {
+          REQUIRED: "required",
+          id: "warning",
+          link: "warning"
+        },
+        cd: {
+          REQUIRED: "required",
+          id: "warning",
+          name: "warning",
+          link: "warning"
+        }
+      },
+      databases: {
+        REQUIRED: "required",
+        LISTOF: {
+          environment: "required",
+          name: "required",
+          type: "required"
+        }
+      },
+      publicEndpoints: {
+        REQUIRED: "required",
+        LISTOF: {
+          environment: "required",
+          endpoints: "required"
+        }
+      },
+      referencedEndpoints: {
+        REQUIRED: "required",
+        LISTOF: {
+          environment: "required",
+          endpoints: "required"
+        }
+      }
+    };
+  }
+});
+
 // src/main.js
 var core = require_core();
 var yaml = require_js_yaml();
 var fs = require("fs");
 var yamlLibrary = require_yaml_library();
-var { console } = require("console");
+var sam = require_sam();
 var docFailed = false;
 var failed = (failure) => {
   core.setFailed(failure);
@@ -3299,14 +3356,18 @@ var failed = (failure) => {
 };
 var warn = (warning) => core.warning(warning);
 var info = (information) => core.info(information);
-warn("test warning");
 try {
   let yamlFilePath = core.getInput("yaml-file");
-  let yamlDocs = yaml.loadAll(fs.readFileSync(yamlFilePath, "utf8"));
-  let schemaFilePath = core.getInput("schema-file");
-  let schemaDoc = JSON.parse(fs.readFileSync(schemaFilePath, "utf8"));
+  let yamlDocs = yaml.loadAll(fs.readFileSync(yamlFilePath, "utf8", warn));
   info("YAML FILE PATH=" + yamlFilePath);
-  info("SCHEMA FILE PATH=" + schemaFilePath);
+  let schemaFilePath = core.getInput("schema-file");
+  let schemaDoc = schemaFilePath == "SAM" ? sam : JSON.parse(fs.readFileSync(schemaFilePath, "utf8"));
+  if (schemaFilePath == "SAM") {
+    info("IM-OPEN SAM.yaml format specified");
+  } else {
+    info("SCHEMA FILE PATH=" + schemaFilePath);
+  }
+  ;
   let docNumber = 1;
   if (yamlDocs.length == 0) {
     failed("No yaml documents detected in " + yamlFilePath);
@@ -3316,6 +3377,8 @@ try {
       yamlLibrary.checkDocAgainstSchema(doc, schemaDoc, failed, warn, info);
       if (docFailed) {
         failed("Document #" + docNumber + " failed validation.");
+      } else {
+        info("Document #" + docNumber + " successfully validated.");
       }
       info("Finished Validating Document #" + docNumber);
       docNumber++;

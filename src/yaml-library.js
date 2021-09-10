@@ -16,7 +16,7 @@ module.exports = {
       return;
     }
 
-    switch (required) {
+    switch (required.toLowerCase()) {
       case REQUIRED.REQUIRED: {
         if (missing) failed(badness);
         break;
@@ -63,7 +63,7 @@ module.exports = {
   recurseIntoArray: function (recursedSchema, keys, nameOfLastProperty, failed, warning, info) {
     for (schemaValue in recursedSchema) {
       if (typeof recursedSchema[schemaValue] == 'string') {
-        if (schemaValue == 'Required') {
+        if (schemaValue == 'REQUIRED') {
           var docValue = this.findValueGivenKeys(keys);
           this.verifyProperty(
             docValue,
@@ -89,7 +89,7 @@ module.exports = {
           );
         }
       } else {
-        if (schemaValue == 'listCheck') {
+        if (schemaValue == 'LISTOF') {
           var temp = [...keys];
           var docValue = this.findValueGivenKeys(temp);
 
