@@ -1,11 +1,11 @@
 name: 'YAML File Validation'
-description: 'Checks structure of yaml files against a pre-defined schema'
+description: 'This action is used to validate a YAML file with a custom schema.'
 inputs:
   yaml-file:
-    description: 'the yaml file to validate'
+    description: 'The path of the yaml file to validate.'
     required: true
   schema-file:
-    description: 'the schema file used to validate yaml file'
+    description: 'The schema file used to validate yaml file.  If omitted or set to ""SAM"", the IM-OPEN SAM schema format will be used.'
     required: true
     default: 'SAM'
 runs:

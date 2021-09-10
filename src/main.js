@@ -18,12 +18,13 @@ try {
   info('YAML FILE PATH=' + yamlFilePath);
 
   let schemaFilePath = core.getInput('schema-file');
-  let schemaDoc = schemaFilePath == 'SAM' ? sam : JSON.parse(fs.readFileSync(schemaFilePath, 'utf8'));
-  if(schemaFilePath == 'SAM'){
+  let schemaDoc =
+    schemaFilePath == 'SAM' ? sam : JSON.parse(fs.readFileSync(schemaFilePath, 'utf8'));
+  if (schemaFilePath == 'SAM') {
     info('IM-OPEN SAM.yaml format specified');
   } else {
     info('SCHEMA FILE PATH=' + schemaFilePath);
-  };
+  }
 
   let docNumber = 1;
   if (yamlDocs.length == 0) {

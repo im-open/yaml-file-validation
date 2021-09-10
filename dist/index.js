@@ -3367,7 +3367,6 @@ try {
   } else {
     info("SCHEMA FILE PATH=" + schemaFilePath);
   }
-  ;
   let docNumber = 1;
   if (yamlDocs.length == 0) {
     failed("No yaml documents detected in " + yamlFilePath);
