@@ -3,14 +3,17 @@
     "schemaVersion": "required",
     "name": "required",
     "projectType": "required",
-    "boundedContexts": "required",
-    "deploymentTargets": "required",
-    "sumoLogicSourceCategories": "required",
-    "teams": "required",
-    "documentation": {
+    "boundedContexts": {
         "REQUIRED": "required",
-        "technical": "warning",
-        "product": "warning"
+        "LISTOF": {}
+    },
+    "teams": {
+        "REQUIRED": "required",
+        "LISTOF": {}
+    },
+    "sumoLogicSourceCategories": {
+        "REQUIRED": "required",
+        "LISTOF": {}
     },
     "build": {
         "REQUIRED": "required",
@@ -21,13 +24,19 @@
         },
         "cd": {
             "REQUIRED": "required",
-            "id": "warning",
+            "id": "required",
             "name": "warning",
             "link": "warning"
         }
     },
+    "documentation": {
+        "REQUIRED": "warning",
+        "technical": "warning",
+        "product": "warning"
+    },
+    "deploymentTargets": "required",
     "databases": {
-        "REQUIRED": "required",
+        "REQUIRED": "warning",
         "LISTOF": {
             "environment": "required",
             "name": "required",
@@ -35,17 +44,27 @@
         }
     },
     "publicEndpoints": {
-        "REQUIRED": "required",
+        "REQUIRED": "warning",
         "LISTOF": {
-            "environment": "required",
-            "endpoints": "required"
+            "environment": {
+                "REQUIRED": "required",
+                "endpoints": {
+                    "REQUIRED": "required",
+                    "LISTOF": {}
+                }
+            }
         }
     },
     "referencedEndpoints": {
-        "REQUIRED": "required",
+        "REQUIRED": "warning",
         "LISTOF": {
-            "environment": "required",
-            "endpoints": "required"
+            "environment": {
+                "REQUIRED": "required",
+                "endpoints": {
+                    "REQUIRED": "required",
+                    "LISTOF": {}
+                }
+            }
         }
     }
 }

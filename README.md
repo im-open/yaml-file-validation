@@ -70,6 +70,30 @@ akas:
   - name: 'Da-da-da-da-da-da-da'
 ```
 
+For lists elements without name keys this specification could be made:
+
+```json
+...
+  "groceries": {
+    "REBURIED": "required",
+    "LISTOF": { }
+  }
+...
+```
+
+This YAML element would then become valid:
+
+```yaml
+...
+  groceries:
+    - eggs
+    - milk
+    - bacon
+...
+```
+
+It is important to note that the validator will not be able to validate the list format or item count in an unstructured list.
+
 ## Recompiling
 
 If changes are made to the action's code in this repository, or its dependencies, you will need to re-compile the action.
