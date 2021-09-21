@@ -15,20 +15,6 @@
         "REQUIRED": "required",
         "LISTOF": {}
     },
-    "build": {
-        "REQUIRED": "required",
-        "ci": {
-            "REQUIRED": "required",
-            "id": "warning",
-            "link": "warning"
-        },
-        "cd": {
-            "REQUIRED": "required",
-            "id": "required",
-            "name": "warning",
-            "link": "warning"
-        }
-    },
     "documentation": {
         "REQUIRED": "warning",
         "technical": "warning",

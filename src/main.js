@@ -23,7 +23,12 @@ try {
   if (schemaFilePath == 'SAM') {
     info('IM-OPEN SAM.yaml format specified');
   } else {
-    info('SCHEMA FILE PATH=' + schemaFilePath);
+    if (schemaFilePath !== '') {
+      info('SCHEMA FILE PATH=' + schemaFilePath);
+    } else {
+      failed('Schema file path is empty');
+      process.exit(1);
+    }
   }
 
   let docNumber = 1;
