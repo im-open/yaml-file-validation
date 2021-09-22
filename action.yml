@@ -1,19 +1,13 @@
-name: 'JavaScript Action Template'
-
-description: 'Add description here'
-
+name: 'YAML File Validation'
+description: 'This action is used to validate a YAML file with a custom schema.'
 inputs:
-  input-1:
-    description: 'Add a description here'
+  yaml-file-path:
+    description: 'The path of the yaml file to validate.'
     required: true
-  input-2:
-    description: 'Add a description here'
-    required: false
-
-outputs:
-  output-1:
-    description: 'Add a description here'
-
+  schema-file-path:
+    description: 'The schema file used to validate yaml file.  If omitted or set to ""SAM"", the IM-OPEN SAM schema format will be used.'
+    required: true
+    default: 'SAM'
 runs:
   using: 'node12'
-  main: 'dist/index.js'
+  main: './dist/index.js'

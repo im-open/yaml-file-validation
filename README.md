@@ -1,80 +1,98 @@
-# javascript-action-template
+# YAML File Validation
 
-This template can be used to quickly start a new custom js action repository.  Click the `Use this template` button at the top to get started.
+This action is used to validate a YAML file with a custom [schema](#schema-file).
 
-## TODOs
-- Readme
-  - [ ] Update the Inputs section with the correct action inputs
-  - [ ] Update the Outputs section with the correct action outputs
-  - [ ] Update the Usage Example section with the correct usage   
-- package.json
-  - [ ] Update the `name` with the new action value
-- src/main.js
-  - [ ] Implement your custom javascript action
-- action.yml
-  - [ ] Fill in the correct name, description, inputs and outputs
-- .prettierrc.json
-  - [ ] Update any preferences you might have
-- CODEOWNERS
-  - [ ] Update as appropriate
-- Repository Settings
-  - [ ] On the *Options* tab check the box to *Automatically delete head branches*
-  - [ ] On the *Options* tab update the repository's visibility (must be done by an org owner)
-  - [ ] On the *Branches* tab add a branch protection rule
-    - [ ] Check *Require pull request reviews before merging*
-    - [ ] Check *Dismiss stale pull request approvals when new commits are pushed*
-    - [ ] Check *Require review from Code Owners*
-    - [ ] Check *Include Administrators*
-  - [ ] On the *Manage Access* tab add the appropriate groups
-- About Section (accessed on the main page of the repo, click the gear icon to edit)
-  - [ ] The repo should have a short description of what it is for
-  - [ ] Add one of the following topic tags:
-    | Topic Tag       | Usage                                    |
-    | --------------- | ---------------------------------------- |
-    | az              | For actions related to Azure             |
-    | code            | For actions related to building code     |
-    | certs           | For actions related to certificates      |
-    | db              | For actions related to databases         |
-    | git             | For actions related to Git               |
-    | iis             | For actions related to IIS               |
-    | microsoft-teams | For actions related to Microsoft Teams   |
-    | svc             | For actions related to Windows Services  |
-    | jira            | For actions related to Jira              |
-    | meta            | For actions related to running workflows |
-    | pagerduty       | For actions related to PagerDuty         |
-    | test            | For actions related to testing           |
-    | tf              | For actions related to Terraform         |
-  - [ ] Add any additional topics for an action if they apply    
-  - [ ] The Packages and Environments boxes can be unchecked
-    
+## Index <!-- omit in toc -->
+
+- [Inputs](#inputs)
+- [Usage Examples](#usage-examples)
+- [Schema File](#schema-file)
+- [Recompiling](#recompiling)
+- [Code of Conduct](#code-of-conduct)
+- [License](#license)
 
 ## Inputs
-| Parameter | Is Required | Default | Description           |
-| --------- | ----------- | ------- | --------------------- |
-| `input-1` | true        |         | Description goes here |
-| `input-2` | false       |         | Description goes here |
 
-## Outputs
-| Output     | Description           |
-| ---------- | --------------------- |
-| `output-1` | Description goes here |
+| Parameter          | Is Required | Description                                                                                                          |
+| ------------------ | ----------- | -------------------------------------------------------------------------------------------------------------------- |
+| `yaml-file-path`   | true        | The path of the yaml file to validate.                                                                               |
+| `schema-file-path` | true        | The schema file used to validate yaml file.  If omitted or set to "SAM", the IM-OPEN SAM schema format will be used. |
 
 ## Usage Examples
 
 ```yml
-# TODO: Fill in the correct usage
 jobs:
-  job1:
+  validate-files:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
 
-      - name: Add Step Here
-        uses: im-open/this-repo@v1.0.0
+      - name: Test SAM YAML
+        uses: im-open/yaml-file-validation@v1.0.0
         with:
-          input-1: 'abc'
-          input-2: '123
+          yaml-file-path: ./sam.yaml
+          # schema-file-path: 'SAM' <-- If left undefined or set to 'SAM' the IM-OPEN SAM schema format will be used
 ```
+
+## Schema File
+
+This action was designed to validate a yaml file particular to IM-OPEN's needs. The [SAM.json] schema file will be used when `SAM` or no `schema-file` is specified.
+
+The syntax for creating a custom schema file is essentially a json formatted file which minimally describes a field if it's `REQUIRED` and child elements, if any.  Possible required values are `required`, `warning`, and `info`. Elements that are lists can be built using the `LISTOF` field.
+
+This is an example schema definition file:
+
+```json
+{
+    "first": "required",
+    "last": "required",
+    "middle": "info",
+    "ag": "warning",
+    "akas": {
+        "REQUIRED": "info",
+        "LISTOF": {
+            "name": "info"
+        }
+    }
+}
+```
+
+This corresponding YAML file would validate successfully based on the definition file:
+
+```yaml
+first: 'John'
+middle: 'Jacob'
+last: 'Jingle-Heimer-Schmidt'
+akas:
+  - name: 'John'
+  - name: 'Jake'
+  - name: 'My name, too!'
+  - name: 'Da-da-da-da-da-da-da'
+```
+
+For lists elements without name keys this specification could be made:
+
+```json
+...
+  "groceries": {
+    "REQUIRED": "required",
+    "LISTOF": { }
+  }
+...
+```
+
+This YAML element would then become valid:
+
+```yaml
+...
+  groceries:
+    - eggs
+    - milk
+    - bacon
+...
+```
+
+It is important to note that the validator will not be able to validate the list format or item count in an unstructured list. It will however ensure that the `groceries` node exists, but it can have zero or more items in the list.
 
 ## Recompiling
 
@@ -98,3 +116,6 @@ This project has adopted the [im-open's Code of Conduct](https://github.com/im-o
 ## License
 
 Copyright &copy; 2021, Extend Health, LLC. Code released under the [MIT license](LICENSE).
+
+<!-- LINKS -->
+[SAM.json]: ./src/sam.json
