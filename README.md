@@ -13,10 +13,10 @@ This action is used to validate a YAML file with a custom [schema](#schema-file)
 
 ## Inputs
 
-| Parameter     | Is Required | Description                                                                                                          |
-| ------------- | ----------- | -------------------------------------------------------------------------------------------------------------------- |
-| `yaml-file`   | true        | The path of the yaml file to validate.                                                                               |
-| `schema-file` | true        | The schema file used to validate yaml file.  If omitted or set to "SAM", the IM-OPEN SAM schema format will be used. |
+| Parameter          | Is Required | Description                                                                                                          |
+| ------------------ | ----------- | -------------------------------------------------------------------------------------------------------------------- |
+| `yaml-file-path`   | true        | The path of the yaml file to validate.                                                                               |
+| `schema-file-path` | true        | The schema file used to validate yaml file.  If omitted or set to "SAM", the IM-OPEN SAM schema format will be used. |
 
 ## Usage Examples
 
@@ -30,8 +30,8 @@ jobs:
       - name: Test SAM YAML
         uses: im-open/yaml-file-validation@v1.0.0
         with:
-          yaml-file: ./sam.yaml
-          # schema-file: 'SAM' <-- If left undefined or set to 'SAM' the IM-OPEN SAM schema format will be used
+          yaml-file-path: ./sam.yaml
+          # schema-file-path: 'SAM' <-- If left undefined or set to 'SAM' the IM-OPEN SAM schema format will be used
 ```
 
 ## Schema File
