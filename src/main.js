@@ -13,11 +13,11 @@ let warn = warning => core.warning(warning);
 let info = information => core.info(information);
 
 try {
-  let yamlFilePath = core.getInput('yaml-file');
+  let yamlFilePath = core.getInput('yaml-file-path');
   let yamlDocs = yaml.loadAll(fs.readFileSync(yamlFilePath, 'utf8', warn));
   info('YAML FILE PATH=' + yamlFilePath);
 
-  let schemaFilePath = core.getInput('schema-file');
+  let schemaFilePath = core.getInput('schema-file-path');
   let schemaDoc =
     schemaFilePath == 'SAM' ? sam : JSON.parse(fs.readFileSync(schemaFilePath, 'utf8'));
   if (schemaFilePath == 'SAM') {

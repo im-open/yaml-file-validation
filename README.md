@@ -75,7 +75,7 @@ For lists elements without name keys this specification could be made:
 ```json
 ...
   "groceries": {
-    "REBURIED": "required",
+    "REQUIRED": "required",
     "LISTOF": { }
   }
 ...
@@ -92,7 +92,7 @@ This YAML element would then become valid:
 ...
 ```
 
-It is important to note that the validator will not be able to validate the list format or item count in an unstructured list.
+It is important to note that the validator will not be able to validate the list format or item count in an unstructured list. It will however ensure that the `groceries` node exists, but it can have zero or more items in the list.
 
 ## Recompiling
 
