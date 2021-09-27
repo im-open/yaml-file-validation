@@ -5,6 +5,7 @@ This action is used to validate a YAML file with a custom [schema](#schema-file)
 ## Index <!-- omit in toc -->
 
 - [Inputs](#inputs)
+- [Outputs](#outputs)
 - [Usage Examples](#usage-examples)
 - [Schema File](#schema-file)
 - [Recompiling](#recompiling)
@@ -18,6 +19,12 @@ This action is used to validate a YAML file with a custom [schema](#schema-file)
 | `yaml-file-path`   | true        | The path of the yaml file to validate.                                                                               |
 | `schema-file-path` | true        | The schema file used to validate yaml file.  If omitted or set to "SAM", the IM-OPEN SAM schema format will be used. |
 
+## Outputs
+
+| Parameter            | Description                                                              |
+| -------------------- | ------------------------------------------------------------------------ |
+| `validation-outcome` | The results of the file validation. Will be success, warning, or failed. |
+
 ## Usage Examples
 
 ```yml
@@ -28,10 +35,16 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Test SAM YAML
-        uses: im-open/yaml-file-validation@v1.0.0
+        id: sam-test
+        uses: im-open/yaml-file-validation@v1.0.1
         with:
           yaml-file-path: ./sam.yaml
           # schema-file-path: 'SAM' <-- If left undefined or set to 'SAM' the IM-OPEN SAM schema format will be used
+        continue-on-error: true
+
+      - name: Output sam
+        run: |
+          echo "SAM Results: ${{ steps.sam-test.outputs.validation-outcome }}"
 ```
 
 ## Schema File
