@@ -65,7 +65,7 @@ try {
     });
 
     let result = 'success';
-    if (hasFailure){
+    if (hasFailure) {
       result = 'failure';
     } else if (hasWarn) {
       result = 'warning';
