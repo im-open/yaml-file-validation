@@ -3905,12 +3905,20 @@ var yaml = require_js_yaml();
 var fs = require('fs');
 var yamlLibrary = require_yaml_library();
 var sam = require_sam();
+var hasFailure = false;
 var docFailed = false;
 var failed = failure => {
   core.setFailed(failure);
   docFailed = true;
+  hasFailure = true;
 };
-var warn = warning => core.warning(warning);
+var hasWarn = false;
+var docWarn = false;
+var warn = warning => {
+  core.warning(warning);
+  docWarn = true;
+  hasWarn = true;
+};
 var info = information => core.info(information);
 try {
   let yamlFilePath = core.getInput('yaml-file-path');
@@ -3932,19 +3940,25 @@ try {
   let docNumber = 1;
   if (yamlDocs.length == 0) {
     failed('No yaml documents detected in ' + yamlFilePath);
+    core.setOutput('validation-outcome', 'failed');
   } else {
     yamlDocs.forEach(doc => {
       info('Validating Document #' + docNumber);
       yamlLibrary.checkDocAgainstSchema(doc, schemaDoc, failed, warn, info);
       if (docFailed) {
         failed('Document #' + docNumber + ' failed validation.');
+      }
+      if (docWarn) {
+        warn('Document #' + docNumber + ' has warnings.');
       } else {
         info('Document #' + docNumber + ' successfully validated.');
       }
       info('Finished Validating Document #' + docNumber);
       docNumber++;
       docFailed = false;
+      docWarn = false;
     });
+    core.setOutput('validation-outcome', hasFailure ? 'failed' : hasWarn ? 'warning' : 'success');
   }
 } catch (error) {
   core.setFailed(error.message);
