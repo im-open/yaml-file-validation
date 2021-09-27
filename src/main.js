@@ -64,7 +64,13 @@ try {
       docWarn = false;
     });
 
-    core.setOutput('validation-outcome', hasFailure ? 'failed' : hasWarn ? 'warning' : 'success');
+    let result = 'success';
+    if (hasFailure){
+      result = 'failure';
+    } else if (hasWarn) {
+      result = 'warning';
+    }
+    core.setOutput('validation-outcome', result);
   }
 } catch (error) {
   core.setFailed(error.message);

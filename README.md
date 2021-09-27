@@ -21,9 +21,9 @@ This action is used to validate a YAML file with a custom [schema](#schema-file)
 
 ## Outputs
 
-| Parameter            | Description                                                                     |
-| -------------------- | ------------------------------------------------------------------------------- |
-| `validation-outcome` | The results of the file validation. Will container success, warning, or failed. |
+| Parameter            | Description                                                              |
+| -------------------- | ------------------------------------------------------------------------ |
+| `validation-outcome` | The results of the file validation. Will be success, warning, or failed. |
 
 ## Usage Examples
 
@@ -35,6 +35,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Test SAM YAML
+        id: sam-test
         uses: im-open/yaml-file-validation@v1.0.1
         with:
           yaml-file-path: ./sam.yaml
