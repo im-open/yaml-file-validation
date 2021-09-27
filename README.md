@@ -35,7 +35,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Test SAM YAML
-        uses: im-open/yaml-file-validation@v1.0.0
+        uses: im-open/yaml-file-validation@v1.0.1
         with:
           yaml-file-path: ./sam.yaml
           # schema-file-path: 'SAM' <-- If left undefined or set to 'SAM' the IM-OPEN SAM schema format will be used
