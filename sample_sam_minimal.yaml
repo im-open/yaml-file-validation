@@ -6,6 +6,4 @@ boundedContexts:
   - 'Bounded Conext 1'
 teams:
   - 'Team 1'
-sumoLogicSourceCategories:
-  - 'Category 1'
 deploymentTargets: 'http://deploy-target.com'

@@ -12,7 +12,7 @@
         "LISTOF": {}
     },
     "sumoLogicSourceCategories": {
-        "REQUIRED": "required",
+        "REQUIRED": "warning",
         "LISTOF": {}
     },
     "documentation": {
