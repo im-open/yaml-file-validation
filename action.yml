@@ -7,13 +7,12 @@ inputs:
     required: true
   schema-file-path:
     description: 'The schema file used to validate yaml file.  If omitted or set to ""SAM"", the IM-OPEN SAM schema format will be used.'
-    required: true
+    required: false
     default: 'SAM'
 
 outputs:
   validation-outcome:
     description: 'The results of the file validation. Will be success, warning, or failed.'
-
 
 runs:
   using: 'node12'

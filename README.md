@@ -17,7 +17,7 @@ This action is used to validate a YAML file with a custom [schema](#schema-file)
 | Parameter          | Is Required | Description                                                                                                          |
 | ------------------ | ----------- | -------------------------------------------------------------------------------------------------------------------- |
 | `yaml-file-path`   | true        | The path of the yaml file to validate.                                                                               |
-| `schema-file-path` | true        | The schema file used to validate yaml file.  If omitted or set to "SAM", the IM-OPEN SAM schema format will be used. |
+| `schema-file-path` | false       | The schema file used to validate yaml file.  If omitted or set to "SAM", the IM-OPEN SAM schema format will be used. |
 
 ## Outputs
 
@@ -36,7 +36,7 @@ jobs:
 
       - name: Test SAM YAML
         id: sam-test
-        uses: im-open/yaml-file-validation@v1.0.1
+        uses: im-open/yaml-file-validation@v1.0.2
         with:
           yaml-file-path: ./sam.yaml
           # schema-file-path: 'SAM' <-- If left undefined or set to 'SAM' the IM-OPEN SAM schema format will be used
@@ -49,7 +49,7 @@ jobs:
 
 ## Schema File
 
-This action was designed to validate a yaml file particular to IM-OPEN's needs. The [SAM.json] schema file will be used when `SAM` or no `schema-file` is specified.
+This action was designed to validate a yaml file particular to IM-OPEN's needs. The [`SAM.json`] schema file will be used when `SAM` or no `schema-file` is specified. This is a  [sample `SAM.YAML`] file that uses the `SAM.json` file for validation.
 
 The syntax for creating a custom schema file is essentially a json formatted file which minimally describes a field if it's `REQUIRED` and child elements, if any.  Possible required values are `required`, `warning`, and `info`. Elements that are lists can be built using the `LISTOF` field.
 
@@ -131,4 +131,5 @@ This project has adopted the [im-open's Code of Conduct](https://github.com/im-o
 Copyright &copy; 2021, Extend Health, LLC. Code released under the [MIT license](LICENSE).
 
 <!-- LINKS -->
-[SAM.json]: ./src/sam.json
+[`SAM.json`]: ./src/sam.json
+[sample `SAM.YAML`]: ./sample_sam.yaml

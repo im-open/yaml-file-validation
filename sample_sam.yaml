@@ -1,0 +1,38 @@
+id: 'Id'
+schemaVersion: '1.0'
+name: 'Project Name'
+projectType: 'WebApplication'
+boundedContexts:
+  - 'Bounded Conext 1'
+  - 'Bounded Conext 2'
+teams:
+  - 'Team 1'
+  - 'Team 2'
+sumoLogicSourceCategories:
+  - 'Category 1'
+  - 'Category 2'
+documentation:
+  technical: 'https://tech-doc.com'
+  product: 'https://product-doc.com'
+deploymentTargets: 'http://deploy-target.com'
+databases:
+  - environment: dev
+    name: dev.db-server.domain.com
+    type: SqlServer
+  - environment: prod
+    name: db-server.domain.com
+    type: SqlServer
+publicEndpoints:
+  - environment: dev
+    endpoints:
+      - 'https://dev.endpoint.com'
+  - environment: prod
+    endpoints:
+      - 'https://endpoint.com'
+referencedEndpoints:
+  - environment: dev
+    endpoints:
+      - 'https://dev.reference.com'
+  - environment: prod
+    endpoints:
+      - 'https://enreferencedpoint.com'
