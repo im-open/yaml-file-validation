@@ -49,7 +49,7 @@ jobs:
 
 ## Schema File
 
-This action was designed to validate a yaml file particular to IM-OPEN's needs. The [`SAM.json`] schema file will be used when `SAM` or no `schema-file` is specified. This is a  [sample `SAM.YAML`] file that uses the `SAM.json` file for validation.
+This action was designed to validate a yaml file particular to IM-OPEN's needs. The [`SAM.json`] schema file will be used when `SAM` or no `schema-file` is specified. This is a  [sample `SAM.YAML`] file that uses the `SAM.json` file for validation. This is a [minimal sample `SAM.YAML`] file that would bee needed to pass the 'SAM' validation.
 
 The syntax for creating a custom schema file is essentially a json formatted file which minimally describes a field if it's `REQUIRED` and child elements, if any.  Possible required values are `required`, `warning`, and `info`. Elements that are lists can be built using the `LISTOF` field.
 
@@ -133,3 +133,4 @@ Copyright &copy; 2021, Extend Health, LLC. Code released under the [MIT license]
 <!-- LINKS -->
 [`SAM.json`]: ./src/sam.json
 [sample `SAM.YAML`]: ./sample_sam.yaml
+[minimal sample `SAM.YAML`]: ./sample_sam_minimal.yaml
