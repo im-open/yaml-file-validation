@@ -3854,7 +3854,7 @@ var require_sam = __commonJS({
         LISTOF: {}
       },
       sumoLogicSourceCategories: {
-        REQUIRED: 'required',
+        REQUIRED: 'warning',
         LISTOF: {}
       },
       documentation: {
