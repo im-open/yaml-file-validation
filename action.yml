@@ -9,10 +9,14 @@ inputs:
     description: 'The schema file used to validate yaml file.  If omitted or set to ""SAM"", the IM-OPEN SAM schema format will be used.'
     required: false
     default: 'SAM'
+  log-level:
+    description: "The severity level of information to include the action's logging. Accepted values are information, warning, and failure. "
+    required: false
+    default: 'information'
 
 outputs:
   validation-outcome:
-    description: 'The results of the file validation. Will be success, warning, or failed.'
+    description: 'The results of the file validation. Will be success, warning, or failed. Defaults to `information`.'
 
 runs:
   using: 'node12'
