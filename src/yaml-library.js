@@ -4,7 +4,14 @@ const REQUIRED = {
   INFO: 'info'
 };
 
-module.exports = {
+const LOG_LEVEL = {
+  information: 0,
+  warning: 1,
+  failure: 2,
+  validate: level => ['information', 'warning', 'failure'].includes(level)
+};
+
+yamlLibrary = {
   globalDoc: {},
 
   verifyProperty: function (propertyValue, required, propertyName, keys, failed, warning, info) {
@@ -110,3 +117,5 @@ module.exports = {
     this.recurseIntoArray(schema, keys, null, failed, warning, info);
   }
 };
+
+module.exports = { LOG_LEVEL, yamlLibrary };

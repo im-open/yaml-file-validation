@@ -1,8 +1,10 @@
 const core = require('@actions/core');
 const yaml = require('js-yaml');
 const fs = require('fs');
-const yamlLibrary = require('./yaml-library.js');
+const { LOG_LEVEL, yamlLibrary } = require('./yaml-library.js');
 const sam = require('./sam.json');
+
+let log_level = LOG_LEVEL.information;
 
 let hasFailure = false;
 let docFailed = false;
@@ -15,12 +17,18 @@ let failed = failure => {
 let hasWarn = false;
 let docWarn = false;
 let warn = warning => {
-  core.warning(warning);
+  if (log_level <= LOG_LEVEL.warning) {
+    core.warning(warning);
+  }
   docWarn = true;
   hasWarn = true;
 };
 
-let info = information => core.info(information);
+let info = information => {
+  if (log_level <= LOG_LEVEL.information) {
+    core.info(information);
+  }
+};
 
 try {
   let yamlFilePath = core.getInput('yaml-file-path');
@@ -39,6 +47,14 @@ try {
       failed('Schema file path is empty');
       process.exit(1);
     }
+  }
+
+  var input_log_level = core.getInput('log-level');
+  info(`Input Logging Level: ${input_log_level}`);
+  if (!LOG_LEVEL.validate(input_log_level)) {
+    throw 'Invalid logging level specified.';
+  } else {
+    log_level = LOG_LEVEL[input_log_level];
   }
 
   let docNumber = 1;

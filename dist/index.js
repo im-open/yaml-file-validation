@@ -3747,7 +3747,13 @@ var require_yaml_library = __commonJS({
       WARNING: 'warning',
       INFO: 'info'
     };
-    module2.exports = {
+    var LOG_LEVEL2 = {
+      information: 0,
+      warning: 1,
+      failure: 2,
+      validate: level => ['information', 'warning', 'failure'].includes(level)
+    };
+    yamlLibrary = {
       globalDoc: {},
       verifyProperty: function (
         propertyValue,
@@ -3834,6 +3840,7 @@ var require_yaml_library = __commonJS({
         this.recurseIntoArray(schema, keys, null, failed2, warning, info2);
       }
     };
+    module2.exports = { LOG_LEVEL: LOG_LEVEL2, yamlLibrary };
   }
 });
 
@@ -3903,8 +3910,9 @@ var require_sam = __commonJS({
 var core = require_core();
 var yaml = require_js_yaml();
 var fs = require('fs');
-var yamlLibrary = require_yaml_library();
+var { LOG_LEVEL, yamlLibrary: yamlLibrary2 } = require_yaml_library();
 var sam = require_sam();
+var log_level = LOG_LEVEL.information;
 var hasFailure = false;
 var docFailed = false;
 var failed = failure => {
@@ -3915,11 +3923,17 @@ var failed = failure => {
 var hasWarn = false;
 var docWarn = false;
 var warn = warning => {
-  core.warning(warning);
+  if (log_level <= LOG_LEVEL.warning) {
+    core.warning(warning);
+  }
   docWarn = true;
   hasWarn = true;
 };
-var info = information => core.info(information);
+var info = information => {
+  if (log_level <= LOG_LEVEL.information) {
+    core.info(information);
+  }
+};
 try {
   let yamlFilePath = core.getInput('yaml-file-path');
   let yamlDocs = yaml.loadAll(fs.readFileSync(yamlFilePath, 'utf8', warn));
@@ -3937,6 +3951,13 @@ try {
       process.exit(1);
     }
   }
+  input_log_level = core.getInput('log-level');
+  info(`Input Logging Level: ${input_log_level}`);
+  if (!LOG_LEVEL.validate(input_log_level)) {
+    throw 'Invalid logging level specified.';
+  } else {
+    log_level = LOG_LEVEL[input_log_level];
+  }
   let docNumber = 1;
   if (yamlDocs.length == 0) {
     failed('No yaml documents detected in ' + yamlFilePath);
@@ -3944,7 +3965,7 @@ try {
   } else {
     yamlDocs.forEach(doc => {
       info('Validating Document #' + docNumber);
-      yamlLibrary.checkDocAgainstSchema(doc, schemaDoc, failed, warn, info);
+      yamlLibrary2.checkDocAgainstSchema(doc, schemaDoc, failed, warn, info);
       if (docFailed) {
         failed('Document #' + docNumber + ' failed validation.');
       }
@@ -3969,3 +3990,4 @@ try {
 } catch (error) {
   core.setFailed(error.message);
 }
+var input_log_level;
