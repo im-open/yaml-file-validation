@@ -16,7 +16,7 @@ inputs:
 
 outputs:
   validation-outcome:
-    description: 'The results of the file validation. Will be success, warning, or failed.'
+    description: 'The results of the file validation. Will be success, warning, or failed. Defaults to `information`.'
 
 runs:
   using: 'node12'

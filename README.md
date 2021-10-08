@@ -14,10 +14,11 @@ This action is used to validate a YAML file with a custom [schema](#schema-file)
 
 ## Inputs
 
-| Parameter          | Is Required | Description                                                                                                          |
-| ------------------ | ----------- | -------------------------------------------------------------------------------------------------------------------- |
-| `yaml-file-path`   | true        | The path of the yaml file to validate.                                                                               |
-| `schema-file-path` | false       | The schema file used to validate yaml file.  If omitted or set to "SAM", the IM-OPEN SAM schema format will be used. |
+| Parameter          | Is Required | Description                                                                                                                                          |
+| ------------------ | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `yaml-file-path`   | true        | The path of the yaml file to validate.                                                                                                               |
+| `schema-file-path` | false       | The schema file used to validate yaml file.  If omitted or set to "SAM", the IM-OPEN SAM schema format will be used.                                 |
+| `log-level`        | false       | The severity level of information to include the action's logging. Accepted values are information, warning, and failure. Defaults to `information`. |
 
 ## Outputs
 
@@ -36,11 +37,12 @@ jobs:
 
       - name: Test SAM YAML
         id: sam-test
-        uses: im-open/yaml-file-validation@v1.0.2
+        uses: im-open/yaml-file-validation@v1.0.3
         with:
           yaml-file-path: ./sam.yaml
           # schema-file-path: 'SAM' <-- If left undefined or set to 'SAM' the IM-OPEN SAM schema format will be used
         continue-on-error: true
+        log-level: 'failure'
 
       - name: Output sam
         run: |
