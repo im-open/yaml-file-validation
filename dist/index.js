@@ -3847,7 +3847,7 @@ var require_yaml_tools = __commonJS({
         }
       },
       checkDocAgainstSchema: function (doc, schema, failed2, warning, info2) {
-        this.doc = doc;
+        this.doc = this.docs[doc];
         var keys = [];
         this.recurseIntoArray(schema, keys, null, failed2, warning, info2);
       },
@@ -3991,10 +3991,9 @@ try {
     core.setOutput('validation-outcome', 'failed');
   } else {
     for (let i = 0; i < YamlLibrary.docs.length; i++) {
-      let doc = YamlLibrary.docs[i];
       let docNumber = i + 1;
       info('Validating Document #' + docNumber);
-      YamlLibrary.checkDocAgainstSchema(doc, schemaDoc, failed, warn, info);
+      YamlLibrary.checkDocAgainstSchema(i, schemaDoc, failed, warn, info);
       if (docFailed) {
         failed('Document #' + docNumber + ' failed validation.');
       } else {

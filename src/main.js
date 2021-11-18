@@ -62,11 +62,10 @@ try {
     core.setOutput('validation-outcome', 'failed');
   } else {
     for (let i = 0; i < YamlLibrary.docs.length; i++) {
-      let doc = YamlLibrary.docs[i];
       let docNumber = i + 1;
 
       info('Validating Document #' + docNumber);
-      YamlLibrary.checkDocAgainstSchema(doc, schemaDoc, failed, warn, info);
+      YamlLibrary.checkDocAgainstSchema(i, schemaDoc, failed, warn, info);
 
       if (docFailed) {
         failed('Document #' + docNumber + ' failed validation.');

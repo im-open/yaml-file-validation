@@ -123,7 +123,7 @@ const YamlLibrary = {
   // doc: The SAM.YML parsed document
   // schema: the JSON schema to compare the doc to
   checkDocAgainstSchema: function (doc, schema, failed, warning, info) {
-    this.doc = doc;
+    this.doc = this.docs[doc];
     var keys = [];
 
     this.recurseIntoArray(schema, keys, null, failed, warning, info);
