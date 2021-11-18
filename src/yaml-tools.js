@@ -122,8 +122,8 @@ const YamlLibrary = {
 
   // doc: The SAM.YML parsed document
   // schema: the JSON schema to compare the doc to
-  checkDocAgainstSchema: function (doc, schema, failed, warning, info) {
-    this.doc = this.docs[doc];
+  checkDocAgainstSchema: function (docIndex, schema, failed, warning, info) {
+    this.doc = this.docs[docIndex];
     var keys = [];
 
     this.recurseIntoArray(schema, keys, null, failed, warning, info);
@@ -133,18 +133,8 @@ const YamlLibrary = {
     let docsArray = cleanDocsData(docs).split('---');
 
     for (let i = 0; i < docsArray.length; i++) {
-      let allComments = true;
       let yamlDoc = yaml.load(docsArray[i]);
       this.docs[i] = yamlDoc == null || yamlDoc == undefined ? {} : yamlDoc;
-
-      let lines = docsArray[i].split('\n');
-      for (let j = 0; j < lines.length; j++) {
-        let line = lines[j].trim();
-        if (line.length > 0 && !line.startsWith('#')) {
-          allComments = false;
-          break;
-        }
-      }
     }
   }
 };

@@ -3846,25 +3846,16 @@ var require_yaml_tools = __commonJS({
           }
         }
       },
-      checkDocAgainstSchema: function (doc, schema, failed2, warning, info2) {
-        this.doc = this.docs[doc];
+      checkDocAgainstSchema: function (docIndex, schema, failed2, warning, info2) {
+        this.doc = this.docs[docIndex];
         var keys = [];
         this.recurseIntoArray(schema, keys, null, failed2, warning, info2);
       },
       loadDocData: function (docs) {
         let docsArray = cleanDocsData(docs).split('---');
         for (let i = 0; i < docsArray.length; i++) {
-          let allComments = true;
           let yamlDoc = yaml.load(docsArray[i]);
           this.docs[i] = yamlDoc == null || yamlDoc == void 0 ? {} : yamlDoc;
-          let lines = docsArray[i].split('\n');
-          for (let j = 0; j < lines.length; j++) {
-            let line = lines[j].trim();
-            if (line.length > 0 && !line.startsWith('#')) {
-              allComments = false;
-              break;
-            }
-          }
         }
       }
     };
@@ -3996,12 +3987,10 @@ try {
       YamlLibrary.checkDocAgainstSchema(i, schemaDoc, failed, warn, info);
       if (docFailed) {
         failed('Document #' + docNumber + ' failed validation.');
+      } else if (docWarn) {
+        warn('Document #' + docNumber + ' has warnings.');
       } else {
-        if (docWarn) {
-          warn('Document #' + docNumber + ' has warnings.');
-        } else {
-          info('Document #' + docNumber + ' successfully validated.');
-        }
+        info('Document #' + docNumber + ' successfully validated.');
       }
       info('Finished Validating Document #' + docNumber);
       docNumber++;

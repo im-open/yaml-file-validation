@@ -69,13 +69,12 @@ try {
 
       if (docFailed) {
         failed('Document #' + docNumber + ' failed validation.');
+      } else if (docWarn) {
+        warn('Document #' + docNumber + ' has warnings.');
       } else {
-        if (docWarn) {
-          warn('Document #' + docNumber + ' has warnings.');
-        } else {
-          info('Document #' + docNumber + ' successfully validated.');
-        }
+        info('Document #' + docNumber + ' successfully validated.');
       }
+
       info('Finished Validating Document #' + docNumber);
 
       docNumber++;
