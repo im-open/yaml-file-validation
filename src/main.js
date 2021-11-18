@@ -1,7 +1,6 @@
 const core = require('@actions/core');
-const yaml = require('js-yaml');
 const fs = require('fs');
-const { LOG_LEVEL, yamlLibrary } = require('./yaml-library.js');
+const { LOG_LEVEL, YamlLibrary } = require('./yaml-tools.js');
 const sam = require('./sam.json');
 
 let log_level = LOG_LEVEL.information;
@@ -32,9 +31,10 @@ let info = information => {
 
 try {
   let yamlFilePath = core.getInput('yaml-file-path');
-  let yamlDocs = yaml.loadAll(fs.readFileSync(yamlFilePath, 'utf8', warn));
-  info('YAML FILE PATH=' + yamlFilePath);
+  let yamlDocData = fs.readFileSync(yamlFilePath, 'utf8', warn);
+  YamlLibrary.loadDocData(yamlDocData);
 
+  info('YAML FILE PATH=' + yamlFilePath);
   let schemaFilePath = core.getInput('schema-file-path');
   let schemaDoc =
     schemaFilePath == 'SAM' ? sam : JSON.parse(fs.readFileSync(schemaFilePath, 'utf8'));
@@ -57,28 +57,32 @@ try {
     log_level = LOG_LEVEL[input_log_level];
   }
 
-  let docNumber = 1;
-  if (yamlDocs.length == 0) {
+  if (YamlLibrary.docs.length == 0) {
     failed('No yaml documents detected in ' + yamlFilePath);
     core.setOutput('validation-outcome', 'failed');
   } else {
-    yamlDocs.forEach(doc => {
+    for (let i = 0; i < YamlLibrary.docs.length; i++) {
+      let doc = YamlLibrary.docs[i];
+      let docNumber = i + 1;
+
       info('Validating Document #' + docNumber);
-      yamlLibrary.checkDocAgainstSchema(doc, schemaDoc, failed, warn, info);
+      YamlLibrary.checkDocAgainstSchema(doc, schemaDoc, failed, warn, info);
+
       if (docFailed) {
         failed('Document #' + docNumber + ' failed validation.');
-      }
-      if (docWarn) {
-        warn('Document #' + docNumber + ' has warnings.');
       } else {
-        info('Document #' + docNumber + ' successfully validated.');
+        if (docWarn) {
+          warn('Document #' + docNumber + ' has warnings.');
+        } else {
+          info('Document #' + docNumber + ' successfully validated.');
+        }
       }
       info('Finished Validating Document #' + docNumber);
 
       docNumber++;
       docFailed = false;
       docWarn = false;
-    });
+    }
 
     let result = 'success';
     if (hasFailure) {

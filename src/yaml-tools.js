@@ -1,3 +1,5 @@
+const yaml = require('js-yaml');
+
 const REQUIRED = {
   REQUIRED: 'required',
   WARNING: 'warning',
@@ -11,8 +13,20 @@ const LOG_LEVEL = {
   validate: level => ['information', 'warning', 'failure'].includes(level)
 };
 
-yamlLibrary = {
-  globalDoc: {},
+const cleanDocsData = docs => {
+  let lines = docs.split('\n');
+  let cleaned = '';
+  lines.forEach(line => {
+    let parts = line.split('#');
+    cleaned += `${parts[0]}\n`;
+  });
+  return cleaned;
+};
+
+const YamlLibrary = {
+  docs: [],
+  KEYWORDS: ['REQUIRED', 'LISTOF'],
+  doc: null,
 
   verifyProperty: function (propertyValue, required, propertyName, keys, failed, warning, info) {
     if (propertyValue == 'DontCascade') {
@@ -57,7 +71,6 @@ yamlLibrary = {
   */
   findValueGivenKeys: function (keys) {
     var value = this.doc;
-
     var allowCascading = false; // if true, then the errors of child "nodes" will come up if the parent has an error, which can inflate the list of errors shown when it may only be the parent node that is wrong.
     var result;
 
@@ -79,9 +92,8 @@ yamlLibrary = {
   // recursed schema: its the part of the schema that the code is currently on, consider it a smaller piece of JSON instead of the whole thing
   // keys: "Build, CI" this tells the code how it reached the current recursed schema
   // nameOfLastProperty: if the keys are "Build, CI", then this variable would be "Build"
-  KEYWORDS: ['REQUIRED', 'LISTOF'],
   recurseIntoArray: function (schema, keys, nameOfLastProperty, failed, warning, info) {
-    for (element in schema) {
+    for (let element in schema) {
       let tempKeys = [...keys];
       tempKeys.push(element);
 
@@ -101,7 +113,7 @@ yamlLibrary = {
       });
 
       if (typeof schema[element] != 'string') {
-        for (childElement in schema[element]) {
+        for (let childElement in schema[element]) {
           this.recurseIntoArray(schema[element], tempKeys, element, failed, warning, info);
         }
       }
@@ -115,7 +127,26 @@ yamlLibrary = {
     var keys = [];
 
     this.recurseIntoArray(schema, keys, null, failed, warning, info);
+  },
+
+  loadDocData: function (docs) {
+    let docsArray = cleanDocsData(docs).split('---');
+
+    for (let i = 0; i < docsArray.length; i++) {
+      let allComments = true;
+      let yamlDoc = yaml.load(docsArray[i]);
+      this.docs[i] = yamlDoc == null || yamlDoc == undefined ? {} : yamlDoc;
+
+      let lines = docsArray[i].split('\n');
+      for (let j = 0; j < lines.length; j++) {
+        let line = lines[j].trim();
+        if (line.length > 0 && !line.startsWith('#')) {
+          allComments = false;
+          break;
+        }
+      }
+    }
   }
 };
 
-module.exports = { LOG_LEVEL, yamlLibrary };
+module.exports = { LOG_LEVEL, YamlLibrary };
