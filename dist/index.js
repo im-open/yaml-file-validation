@@ -3739,9 +3739,10 @@ var require_js_yaml = __commonJS({
   }
 });
 
-// src/yaml-library.js
-var require_yaml_library = __commonJS({
-  'src/yaml-library.js'(exports2, module2) {
+// src/yaml-tools.js
+var require_yaml_tools = __commonJS({
+  'src/yaml-tools.js'(exports2, module2) {
+    var yaml = require_js_yaml();
     var REQUIRED = {
       REQUIRED: 'required',
       WARNING: 'warning',
@@ -3753,8 +3754,20 @@ var require_yaml_library = __commonJS({
       failure: 2,
       validate: level => ['information', 'warning', 'failure'].includes(level)
     };
-    yamlLibrary = {
-      globalDoc: {},
+    var cleanDocsData = docs => {
+      let lines = docs.split('\n');
+      let cleaned = '';
+      lines.forEach(line => {
+        let parts = line.split('#');
+        cleaned += `${parts[0]}
+`;
+      });
+      return cleaned;
+    };
+    var YamlLibrary2 = {
+      docs: [],
+      KEYWORDS: ['REQUIRED', 'LISTOF'],
+      doc: null,
       verifyProperty: function (
         propertyValue,
         required,
@@ -3809,9 +3822,8 @@ var require_yaml_library = __commonJS({
         });
         return result;
       },
-      KEYWORDS: ['REQUIRED', 'LISTOF'],
       recurseIntoArray: function (schema, keys, nameOfLastProperty, failed2, warning, info2) {
-        for (element in schema) {
+        for (let element in schema) {
           let tempKeys = [...keys];
           tempKeys.push(element);
           let verify = [];
@@ -3828,19 +3840,26 @@ var require_yaml_library = __commonJS({
             this.verifyProperty(v.value, v.required, v.element, v.keys, failed2, warning, info2);
           });
           if (typeof schema[element] != 'string') {
-            for (childElement in schema[element]) {
+            for (let childElement in schema[element]) {
               this.recurseIntoArray(schema[element], tempKeys, element, failed2, warning, info2);
             }
           }
         }
       },
-      checkDocAgainstSchema: function (doc, schema, failed2, warning, info2) {
-        this.doc = doc;
+      checkDocAgainstSchema: function (docIndex, schema, failed2, warning, info2) {
+        this.doc = this.docs[docIndex];
         var keys = [];
         this.recurseIntoArray(schema, keys, null, failed2, warning, info2);
+      },
+      loadDocData: function (docs) {
+        let docsArray = cleanDocsData(docs).split('---');
+        for (let i = 0; i < docsArray.length; i++) {
+          let yamlDoc = yaml.load(docsArray[i]);
+          this.docs[i] = yamlDoc == null || yamlDoc == void 0 ? {} : yamlDoc;
+        }
       }
     };
-    module2.exports = { LOG_LEVEL: LOG_LEVEL2, yamlLibrary };
+    module2.exports = { LOG_LEVEL: LOG_LEVEL2, YamlLibrary: YamlLibrary2 };
   }
 });
 
@@ -3908,9 +3927,8 @@ var require_sam = __commonJS({
 
 // src/main.js
 var core = require_core();
-var yaml = require_js_yaml();
 var fs = require('fs');
-var { LOG_LEVEL, yamlLibrary: yamlLibrary2 } = require_yaml_library();
+var { LOG_LEVEL, YamlLibrary } = require_yaml_tools();
 var sam = require_sam();
 var log_level = LOG_LEVEL.information;
 var hasFailure = false;
@@ -3936,7 +3954,8 @@ var info = information => {
 };
 try {
   let yamlFilePath = core.getInput('yaml-file-path');
-  let yamlDocs = yaml.loadAll(fs.readFileSync(yamlFilePath, 'utf8', warn));
+  let yamlDocData = fs.readFileSync(yamlFilePath, 'utf8', warn);
+  YamlLibrary.loadDocData(yamlDocData);
   info('YAML FILE PATH=' + yamlFilePath);
   let schemaFilePath = core.getInput('schema-file-path');
   let schemaDoc =
@@ -3958,18 +3977,17 @@ try {
   } else {
     log_level = LOG_LEVEL[input_log_level];
   }
-  let docNumber = 1;
-  if (yamlDocs.length == 0) {
+  if (YamlLibrary.docs.length == 0) {
     failed('No yaml documents detected in ' + yamlFilePath);
     core.setOutput('validation-outcome', 'failed');
   } else {
-    yamlDocs.forEach(doc => {
+    for (let i = 0; i < YamlLibrary.docs.length; i++) {
+      let docNumber = i + 1;
       info('Validating Document #' + docNumber);
-      yamlLibrary2.checkDocAgainstSchema(doc, schemaDoc, failed, warn, info);
+      YamlLibrary.checkDocAgainstSchema(i, schemaDoc, failed, warn, info);
       if (docFailed) {
         failed('Document #' + docNumber + ' failed validation.');
-      }
-      if (docWarn) {
+      } else if (docWarn) {
         warn('Document #' + docNumber + ' has warnings.');
       } else {
         info('Document #' + docNumber + ' successfully validated.');
@@ -3978,7 +3996,7 @@ try {
       docNumber++;
       docFailed = false;
       docWarn = false;
-    });
+    }
     let result = 'success';
     if (hasFailure) {
       result = 'failure';

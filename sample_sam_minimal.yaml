@@ -1,7 +1,7 @@
 id: 'Id'
 schemaVersion: '1.0'
 name: 'Project Name'
-projectType: 'WebApplication'
+projectType: 'WebApplication' #---
 boundedContexts:
   - 'Bounded Conext 1'
 teams:

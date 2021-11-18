@@ -1,3 +1,5 @@
+const yaml = require('js-yaml');
+
 const REQUIRED = {
   REQUIRED: 'required',
   WARNING: 'warning',
@@ -11,8 +13,20 @@ const LOG_LEVEL = {
   validate: level => ['information', 'warning', 'failure'].includes(level)
 };
 
-yamlLibrary = {
-  globalDoc: {},
+const cleanDocsData = docs => {
+  let lines = docs.split('\n');
+  let cleaned = '';
+  lines.forEach(line => {
+    let parts = line.split('#');
+    cleaned += `${parts[0]}\n`;
+  });
+  return cleaned;
+};
+
+const YamlLibrary = {
+  docs: [],
+  KEYWORDS: ['REQUIRED', 'LISTOF'],
+  doc: null,
 
   verifyProperty: function (propertyValue, required, propertyName, keys, failed, warning, info) {
     if (propertyValue == 'DontCascade') {
@@ -57,7 +71,6 @@ yamlLibrary = {
   */
   findValueGivenKeys: function (keys) {
     var value = this.doc;
-
     var allowCascading = false; // if true, then the errors of child "nodes" will come up if the parent has an error, which can inflate the list of errors shown when it may only be the parent node that is wrong.
     var result;
 
@@ -79,9 +92,8 @@ yamlLibrary = {
   // recursed schema: its the part of the schema that the code is currently on, consider it a smaller piece of JSON instead of the whole thing
   // keys: "Build, CI" this tells the code how it reached the current recursed schema
   // nameOfLastProperty: if the keys are "Build, CI", then this variable would be "Build"
-  KEYWORDS: ['REQUIRED', 'LISTOF'],
   recurseIntoArray: function (schema, keys, nameOfLastProperty, failed, warning, info) {
-    for (element in schema) {
+    for (let element in schema) {
       let tempKeys = [...keys];
       tempKeys.push(element);
 
@@ -101,7 +113,7 @@ yamlLibrary = {
       });
 
       if (typeof schema[element] != 'string') {
-        for (childElement in schema[element]) {
+        for (let childElement in schema[element]) {
           this.recurseIntoArray(schema[element], tempKeys, element, failed, warning, info);
         }
       }
@@ -110,12 +122,25 @@ yamlLibrary = {
 
   // doc: The SAM.YML parsed document
   // schema: the JSON schema to compare the doc to
-  checkDocAgainstSchema: function (doc, schema, failed, warning, info) {
-    this.doc = doc;
+  checkDocAgainstSchema: function (docIndex, schema, failed, warning, info) {
+    this.doc = this.docs[docIndex];
     var keys = [];
 
     this.recurseIntoArray(schema, keys, null, failed, warning, info);
+  },
+
+  loadDocData: function (docs) {
+    let docsArray = cleanDocsData(docs).split('---');
+
+    for (let i = 0; i < docsArray.length; i++) {
+      let yamlDoc = yaml.load(docsArray[i]);
+      // If a doc is empty, whether it's a single doc or included as part of several docs
+      // the yaml.load() will return a null or undefined value.  The parser, in a later call,
+      // would return a successful validation for null or undefined items.  Changing it
+      // to {} will force the parser to check against the schema doc and cause a failure.
+      this.docs[i] = yamlDoc == null || yamlDoc == undefined ? {} : yamlDoc;
+    }
   }
 };
 
-module.exports = { LOG_LEVEL, yamlLibrary };
+module.exports = { LOG_LEVEL, YamlLibrary };
