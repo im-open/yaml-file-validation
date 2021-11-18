@@ -134,9 +134,10 @@ const YamlLibrary = {
 
     for (let i = 0; i < docsArray.length; i++) {
       let yamlDoc = yaml.load(docsArray[i]);
-      // If a doc is empty depending on whether it's a single doc or included
-      // as part of several docs, the yaml parser will return a null or undefined value
-      // changing it to {} will force the parser to check against the schema doc
+      // If a doc is empty, whether it's a single doc or included as part of several docs
+      // the yaml.load() will return a null or undefined value.  The parser, in a later call,
+      // would return a successful validation for null or undefined items.  Changing it
+      // to {} will force the parser to check against the schema doc and cause a failure.
       this.docs[i] = yamlDoc == null || yamlDoc == undefined ? {} : yamlDoc;
     }
   }
