@@ -13,10 +13,16 @@ inputs:
     description: "The severity level of information to include the action's logging. Accepted values are information, warning, and failure. "
     required: false
     default: 'information'
+  output-json:
+    description: 'Specify whether to oupt a json version is output accepts true or false. It will only produce an output if no failures occur.'
+    required: false
+    default: 'false'
 
 outputs:
   validation-outcome:
     description: 'The results of the file validation. Will be success, warning, or failed. Defaults to `information`.'
+  json-output:
+    description: 'A json conversion of the yaml file.'
 
 runs:
   using: 'node12'
