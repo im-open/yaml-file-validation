@@ -16,17 +16,19 @@ This action is used to validate a YAML file with a custom [schema](#schema-file)
 
 ## Inputs
 
-| Parameter          | Is Required | Description                                                                                                                                          |
-| ------------------ | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `yaml-file-path`   | true        | The path of the yaml file to validate.                                                                                                               |
-| `schema-file-path` | false       | The schema file used to validate yaml file.  If omitted or set to "SAM", the IM-OPEN SAM schema format will be used.                                 |
-| `log-level`        | false       | The severity level of information to include the action's logging. Accepted values are information, warning, and failure. Defaults to `information`. |
+| Parameter          | Is Required | Description                                                                                                                  |
+| ------------------ | ----------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `yaml-file-path`   | true        | The path of the yaml file to validate.                                                                                       |
+| `schema-file-path` | false       | The schema file used to validate yaml file.  If omitted or set to "SAM", the IM-OPEN SAM schema format will be used.         |
+| `log-level`        | false       | The severity level of information to include the action's logging. Accepted values are information, warning, and failure.    |
+| `output-json`      | false       | Specify whether to oupt a json version is output accepts true or false. It will only produce an output if no failures occur. |
 
 ## Outputs
 
 | Parameter            | Description                                                              |
 | -------------------- | ------------------------------------------------------------------------ |
 | `validation-outcome` | The results of the file validation. Will be success, warning, or failed. |
+| `json-output`        | A json conversion of the yaml file.                                      |
 
 ## Usage Examples
 
