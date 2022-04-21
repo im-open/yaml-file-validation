@@ -3955,6 +3955,7 @@ var info = information => {
 try {
   let yamlFilePath = core.getInput('yaml-file-path');
   let yamlDocData = fs.readFileSync(yamlFilePath, 'utf8', warn);
+  let output_json = core.getInput('output-json').toLowerCase() == 'true';
   YamlLibrary.loadDocData(yamlDocData);
   info('YAML FILE PATH=' + yamlFilePath);
   let schemaFilePath = core.getInput('schema-file-path');
@@ -3981,6 +3982,7 @@ try {
     failed('No yaml documents detected in ' + yamlFilePath);
     core.setOutput('validation-outcome', 'failed');
   } else {
+    let json_output = { documents: [] };
     for (let i = 0; i < YamlLibrary.docs.length; i++) {
       let docNumber = i + 1;
       info('Validating Document #' + docNumber);
@@ -4002,6 +4004,9 @@ try {
       result = 'failure';
     } else if (hasWarn) {
       result = 'warning';
+    }
+    if (!hasFailure && output_json) {
+      core.setOutput('json-output', JSON.stringify({ documents: YamlLibrary.docs }));
     }
     core.setOutput('validation-outcome', result);
   }
