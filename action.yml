@@ -14,7 +14,7 @@ inputs:
     required: false
     default: 'information'
   output-json:
-    description: 'Specify whether to oupt a json version is output accepts true or false. It will only produce an output if no failures occur.'
+    description: 'Specify whether or not to output a json document with the results. Accepts true or false. It will only produce an output if no failures occur.'
     required: false
     default: 'false'
 

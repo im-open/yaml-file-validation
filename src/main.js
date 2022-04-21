@@ -93,12 +93,7 @@ try {
     }
 
     if (!hasFailure && output_json) {
-      core.setOutput(
-        'json-output',
-        JSON.stringify(
-          YamlLibrary.docs.length == 1 ? YamlLibrary.docs[0] : { documents: YamlLibrary.docs }
-        )
-      );
+      core.setOutput('json-output', JSON.stringify({ documents: YamlLibrary.docs }));
     }
 
     core.setOutput('validation-outcome', result);

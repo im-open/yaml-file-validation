@@ -5,6 +5,7 @@ This action is used to validate a YAML file with a custom [schema](#schema-file)
 ## Index <!-- omit in toc -->
 
 - [Inputs](#inputs)
+  - [Output JSON Example](#output-json-example)
 - [Outputs](#outputs)
 - [Usage Examples](#usage-examples)
 - [Schema File](#schema-file)
@@ -16,12 +17,20 @@ This action is used to validate a YAML file with a custom [schema](#schema-file)
 
 ## Inputs
 
-| Parameter          | Is Required | Description                                                                                                                  |
-| ------------------ | ----------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| `yaml-file-path`   | true        | The path of the yaml file to validate.                                                                                       |
-| `schema-file-path` | false       | The schema file used to validate yaml file.  If omitted or set to "SAM", the IM-OPEN SAM schema format will be used.         |
-| `log-level`        | false       | The severity level of information to include the action's logging. Accepted values are information, warning, and failure.    |
-| `output-json`      | false       | Specify whether or not to output a json document with the results. Accepts true or false. It will only produce an output if no failures occur. |
+| Parameter                                                 | Is Required | Description                                                                                                                                    |
+| --------------------------------------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `yaml-file-path`                                          | true        | The path of the yaml file to validate.                                                                                                         |
+| `schema-file-path`                                        | false       | The schema file used to validate yaml file.  If omitted or set to "SAM", the IM-OPEN SAM schema format will be used.                           |
+| `log-level`                                               | false       | The severity level of information to include the action's logging. Accepted values are information, warning, and failure.                      |
+| <font size="1" style="super">&dagger;</font>`output-json` | false       | Specify whether or not to output a json document with the results. Accepts true or false. It will only produce an output if no failures occur. |
+<font size="1">&dagger;</font> _Output will always return a json document with a documents array attribute. (See [Output Example](#output-json-example))_
+
+### Output JSON Example
+```json
+{
+  documents: [<document1>, <document2>, <document3>, ...]
+}
+```
 
 ## Outputs
 
