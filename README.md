@@ -46,7 +46,7 @@ jobs:
   validate-files:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Test SAM YAML
         id: sam-test

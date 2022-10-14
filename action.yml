@@ -25,5 +25,5 @@ outputs:
     description: 'A json conversion of the yaml file.'
 
 runs:
-  using: 'node12'
+  using: 'node16'
   main: './dist/index.js'
