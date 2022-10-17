@@ -46,11 +46,11 @@ jobs:
   validate-files:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Test SAM YAML
         id: sam-test
-        uses: im-open/yaml-file-validation@v1.1.1
+        uses: im-open/yaml-file-validation@v1.2.0
         with:
           yaml-file-path: ./sam.yaml
           # schema-file-path: 'SAM' <-- If left undefined or set to 'SAM' the IM-OPEN SAM schema format will be used
