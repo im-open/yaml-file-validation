@@ -5929,9 +5929,12 @@ var info = information => {
   }
 };
 try {
-  let yamlFilePath = core.getInput('yaml-file-path');
+  let yamlFilePath = core.getInput('yaml-file-path', {
+    required: true,
+    trimWhitespace: true
+  });
   let yamlDocData = fs.readFileSync(yamlFilePath, 'utf8', warn);
-  let output_json = core.getInput('output-json').toLowerCase() == 'true';
+  let output_json = core.getBooleanInput('output-json');
   YamlLibrary.loadDocData(yamlDocData);
   info('YAML FILE PATH=' + yamlFilePath);
   let schemaFilePath = core.getInput('schema-file-path');
