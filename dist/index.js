@@ -5929,13 +5929,16 @@ var info = information => {
   }
 };
 try {
-  let yamlFilePath = core.getInput('yaml-file-path');
-  let yamlDocData = fs.readFileSync(yamlFilePath, 'utf8', warn);
-  let output_json = core.getInput('output-json').toLowerCase() == 'true';
+  const yamlFilePath = core.getInput('yaml-file-path', {
+    required: true,
+    trimWhitespace: true
+  });
+  const yamlDocData = fs.readFileSync(yamlFilePath, 'utf8', warn);
+  const output_json = core.getBooleanInput('output-json');
   YamlLibrary.loadDocData(yamlDocData);
   info('YAML FILE PATH=' + yamlFilePath);
-  let schemaFilePath = core.getInput('schema-file-path');
-  let schemaDoc =
+  const schemaFilePath = core.getInput('schema-file-path');
+  const schemaDoc =
     schemaFilePath == 'SAM' ? sam : JSON.parse(fs.readFileSync(schemaFilePath, 'utf8'));
   if (schemaFilePath == 'SAM') {
     info('IM-OPEN SAM.yaml format specified');

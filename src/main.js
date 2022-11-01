@@ -7,7 +7,7 @@ let log_level = LOG_LEVEL.information;
 
 let hasFailure = false;
 let docFailed = false;
-let failed = failure => {
+const failed = failure => {
   core.setFailed(failure);
   docFailed = true;
   hasFailure = true;
@@ -15,7 +15,7 @@ let failed = failure => {
 
 let hasWarn = false;
 let docWarn = false;
-let warn = warning => {
+const warn = warning => {
   if (log_level <= LOG_LEVEL.warning) {
     core.warning(warning);
   }
@@ -23,22 +23,25 @@ let warn = warning => {
   hasWarn = true;
 };
 
-let info = information => {
+const info = information => {
   if (log_level <= LOG_LEVEL.information) {
     core.info(information);
   }
 };
 
 try {
-  let yamlFilePath = core.getInput('yaml-file-path');
-  let yamlDocData = fs.readFileSync(yamlFilePath, 'utf8', warn);
-  let output_json = core.getInput('output-json').toLowerCase() == 'true';
+  const yamlFilePath = core.getInput('yaml-file-path', {
+    required: true,
+    trimWhitespace: true
+  });
+  const yamlDocData = fs.readFileSync(yamlFilePath, 'utf8', warn);
+  const output_json = core.getBooleanInput('output-json');
 
   YamlLibrary.loadDocData(yamlDocData);
 
   info('YAML FILE PATH=' + yamlFilePath);
-  let schemaFilePath = core.getInput('schema-file-path');
-  let schemaDoc =
+  const schemaFilePath = core.getInput('schema-file-path');
+  const schemaDoc =
     schemaFilePath == 'SAM' ? sam : JSON.parse(fs.readFileSync(schemaFilePath, 'utf8'));
   if (schemaFilePath == 'SAM') {
     info('IM-OPEN SAM.yaml format specified');
