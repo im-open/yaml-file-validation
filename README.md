@@ -50,7 +50,7 @@ jobs:
 
       - name: Test SAM YAML
         id: sam-test
-        uses: im-open/yaml-file-validation@v1.2.1
+        uses: im-open/yaml-file-validation@v1.2.2
         with:
           yaml-file-path: ./sam.yaml
           # schema-file-path: 'SAM' <-- If left undefined or set to 'SAM' the IM-OPEN SAM schema format will be used
