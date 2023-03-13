@@ -10,7 +10,7 @@ This action is used to validate a YAML file with a custom [schema](#schema-file)
 - [Usage Examples](#usage-examples)
 - [Schema File](#schema-file)
 - [Contributing](#contributing)
-  - [Recompiling](#recompiling)
+  - [Recompiling](#recompiling-manually)
   - [Incrementing the Version](#incrementing-the-version)
 - [Code of Conduct](#code-of-conduct)
 - [License](#license)
@@ -26,6 +26,7 @@ This action is used to validate a YAML file with a custom [schema](#schema-file)
 <font size="1">&dagger;</font> _Output will always return a json document with a documents array attribute. (See [Output Example](#output-json-example))_
 
 ### Output JSON Example
+
 ```json
 {
   documents: [<document1>, <document2>, <document3>, ...]
@@ -50,7 +51,8 @@ jobs:
 
       - name: Test SAM YAML
         id: sam-test
-        uses: im-open/yaml-file-validation@v1.2.2
+        # You may also reference the major or major.minor version
+        uses: im-open/yaml-file-validation@v1.2.3
         with:
           yaml-file-path: ./sam.yaml
           # schema-file-path: 'SAM' <-- If left undefined or set to 'SAM' the IM-OPEN SAM schema format will be used
@@ -165,7 +167,7 @@ This action uses [git-version-lite] to examine commit messages to determine whet
 | major          | +semver:major                               |
 | minor          | +semver:feature                             |
 | minor          | +semver:minor                               |
-| patch          | *default increment type, no comment needed* |
+| patch          | _default increment type, no comment needed_ |
 
 ## Code of Conduct
 
